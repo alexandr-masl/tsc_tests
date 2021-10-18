@@ -240,7 +240,7 @@ export class TG_bot{
         // };
 
         if (!user_menu){
-            return console.log(colors.red("!!!!!  MCR ERRR : Can NOT define menu of callback  !!!!!"))
+            return console.log(colors.red("!!! TG_bot : _callbacks_handler : Can NOT define menu of callback  !!!!!"))
         };
 
         user_menu.callbacks_handler(query, ctx);

@@ -1,8 +1,9 @@
 
 
 import { State } from '../State';
-const { Telegraf, Markup } = require('telegraf');
 const colors = require("colors");
+import { Markup } from 'telegraf';
+const Extra = require('telegraf/extra');
 
 
 export class MainMenu implements State {
@@ -25,14 +26,23 @@ export class MainMenu implements State {
 
         try{   
 
-            const buttons = Markup.button.url(['First Button', this._btn_1_calbck])
+            // const buttons = Markup.button.url(['First Button', this._btn_1_calbck])
             // const button = Markup.keyboard(buttons: HideableKBtn[][])
 
-
-            await ctx.reply('My Menu\n', new Markup.inlineKeyboard(buttons))
+            await ctx.reply( 
+                '<b>My Menu</b>\n'
+                , Extra.HTML().markup((m) =>
+                    m.inlineKeyboard([
+                        [
+                            m.callbackButton('FIRST', this._btn_1_calbck),
+                            m.callbackButton('📊SECOND', this._btn_2_calbck),
+                            m.callbackButton('❗️THIRD', this._btn_3_calbck)
+                        ]
+                    ])
+                )
+            )
             .then(async (msg: any) => {
                 // await Mongooose.getInstance().updateSession(msg, 'update')
-                console.log("... state updated ");
             });
         }
         catch(err){
