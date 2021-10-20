@@ -1,44 +1,38 @@
 
 
-import { State } from '../State';
+import { State } from '../../State';
 const colors = require("colors");
 import { Markup } from 'telegraf';
-import { TG_bot } from '../TG_bot';
-import { Settings_menu } from './Settings/Settings_menu';
+import { TG_bot } from '../../TG_bot';
+import { MainMenu } from '../MainMenu';
 const Extra = require('telegraf/extra');
 
 
-export class MainMenu implements State {
+export class Settings_menu implements State {
 
-    public state_id = "main_menu";
+    public state_id = "settings_menu";
     
-    _settings_menu_btn_calbck: string;
-    _btn_2_calbck: string;
-    _btn_3_calbck: string;
+    _ok_btn_calbck: string;
+    _back_btn_calbck: string;
 
 
     public constructor() {
 
-        this._settings_menu_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "first"});
-        this._btn_2_calbck = JSON.stringify({state_name: this.state_id, state_query: "second"});
-        this._btn_3_calbck = JSON.stringify({state_name: this.state_id, state_query: "third"});
+        this._ok_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "ok"});
+        this._back_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "back"});
     };
     
     public async render(ctx:any) {      
 
         try{   
 
-            // const buttons = Markup.button.url(['First Button', this._btn_1_calbck])
-            // const button = Markup.keyboard(buttons: HideableKBtn[][])
-
             await ctx.reply( 
-                '<b>Main Menu</b>\n'
+                '<b>Settings Menu</b>\n'
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         [
-                            m.callbackButton('Settings', this._settings_menu_btn_calbck),
-                            m.callbackButton('📊SECOND', this._btn_2_calbck),
-                            m.callbackButton('❗️THIRD', this._btn_3_calbck)
+                            m.callbackButton('Ok', this._ok_btn_calbck),
+                            m.callbackButton('Back', this._back_btn_calbck)
                         ]
                     ])
                 )
@@ -56,22 +50,15 @@ export class MainMenu implements State {
 
     public async callbacks_handler(query: any, ctx: any): Promise<any>{
 
-        if (query.state_query == "first"){
+        if (query.state_query == "ok"){
 
-            console.log(" ------->>>>> FIRST BUTTON TRIGERED !!!!!!!!!!!!!!!");
             return await TG_bot.changeState(new Settings_menu, ctx);
-           
         }
-        else if (query.state_query === "second"){
+        else if (query.state_query === "back"){
 
-
-        }
-        else if (query.state_query === "third"){
-
-
+            return await TG_bot.changeState(new MainMenu, ctx);
         }
         else {
-
             console.log(colors.red("!!!!!  MainMenu ERRR : Can NOT define callback_query, user:" + ctx.chat.id));
             return null;
         };

@@ -93,18 +93,20 @@ export class TG_bot{
             
             try{    
 
-                const session = await Mongooose.getInstance().getSession(ctx.chat.id)
+                const session = await Mongooose.getInstance().getSession(ctx.chat.id);
+
                 if(!session){
-                    await Mongooose.getInstance().createSession(ctx.update)
+                    await Mongooose.getInstance().createSession(ctx.update);
                 };
 
                 // const user = await Application.getInstance().get_user(ctx.chat.id)
 
-                return await TG_bot.changeState(new MainMenu(), ctx)
+                return await TG_bot.changeState(new MainMenu(), ctx);
+
             }catch(err){
                 console.log(colors.red('!!! MCR BOT :: on start err ...'))
                 console.log(err)
-            }
+            };
         });
   
         this.tg_bot_inst.on('text', async (ctx : any) => {  

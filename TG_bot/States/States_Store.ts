@@ -1,5 +1,6 @@
 import { State } from '../State';
 import { MainMenu } from './MainMenu';
+import { Settings_menu } from './Settings/Settings_menu';
 
 export class States_Store {
 
@@ -24,13 +25,16 @@ export class States_Store {
 
     public  get_user_state(query: any): State{
 
-        const state_id = query.s;
-        const trade_id = query.t;
-        const state_payload = query.pl;
+        const state_id = query.state_name;
+
 
         if (state_id === "main_menu" ){
 
             return new MainMenu;
+        }
+        else if (state_id === "settings_menu" ){
+
+            return new Settings_menu;
         }
         else {
 
