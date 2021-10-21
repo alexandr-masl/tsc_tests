@@ -1,5 +1,5 @@
 
-const {tokens: {token_dev}} = require('../../settings.json');
+const {tokens: {token_dev}} = require('../settings.json');
 const {Telegraf} = require('telegraf');
 const {Markup} = Telegraf;
 import { Mongooose } from '../DataBase/Mongo';

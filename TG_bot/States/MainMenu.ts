@@ -5,6 +5,7 @@ const colors = require("colors");
 import { Markup } from 'telegraf';
 import { TG_bot } from '../TG_bot';
 import { Settings_menu } from './Settings/Settings_menu';
+import { User_menu } from '../States/User/User_Menu';
 const Extra = require('telegraf/extra');
 
 
@@ -13,14 +14,14 @@ export class MainMenu implements State {
     public state_id = "main_menu";
     
     _settings_menu_btn_calbck: string;
-    _btn_2_calbck: string;
+    _user_menu_btn_calbck: string;
     _btn_3_calbck: string;
 
 
     public constructor() {
 
         this._settings_menu_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "first"});
-        this._btn_2_calbck = JSON.stringify({state_name: this.state_id, state_query: "second"});
+        this._user_menu_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "second"});
         this._btn_3_calbck = JSON.stringify({state_name: this.state_id, state_query: "third"});
     };
     
@@ -37,7 +38,7 @@ export class MainMenu implements State {
                     m.inlineKeyboard([
                         [
                             m.callbackButton('Settings', this._settings_menu_btn_calbck),
-                            m.callbackButton('📊SECOND', this._btn_2_calbck),
+                            m.callbackButton('User', this._user_menu_btn_calbck),
                             m.callbackButton('❗️THIRD', this._btn_3_calbck)
                         ]
                     ])
@@ -63,7 +64,8 @@ export class MainMenu implements State {
            
         }
         else if (query.state_query === "second"){
-
+            console.log(" ------->>>>> SECOND BUTTON TRIGERED !!!!!!!!!!!!!!!");
+            return await TG_bot.changeState(new User_menu, ctx);
 
         }
         else if (query.state_query === "third"){
