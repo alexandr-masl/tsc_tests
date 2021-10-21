@@ -1,6 +1,7 @@
 import { State } from '../State';
 import { MainMenu } from './MainMenu';
 import { Settings_menu } from './Settings/Settings_menu';
+import { User_menu } from './User/User_Menu';
 
 export class States_Store {
 
@@ -36,8 +37,13 @@ export class States_Store {
 
             return new Settings_menu;
         }
+        else if (state_id === "user_menu" ){
+
+            return new User_menu;
+        }
         else {
 
+            //hghghghghgh
             return null;
         };
     };

@@ -52,11 +52,11 @@ export class Settings_menu implements State {
 
         if (query.state_query == "ok"){
 
-            return await TG_bot.changeState(new Settings_menu, ctx);
+            return await TG_bot.changeState(new Settings_menu(), ctx);
         }
         else if (query.state_query === "back"){
 
-            return await TG_bot.changeState(new MainMenu, ctx);
+            return await TG_bot.changeState(new MainMenu(), ctx);
         }
         else {
             console.log(colors.red("!!!!!  MainMenu ERRR : Can NOT define callback_query, user:" + ctx.chat.id));
