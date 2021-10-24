@@ -1,7 +1,7 @@
 
-const {tokens: {token_dev}} = require('../settings.json');
-const {Telegraf} = require('telegraf');
-const {Markup} = Telegraf;
+const { tokens: { token_dev } } = require('../../settings.json');
+const { Telegraf } = require('telegraf');
+const { Markup } = Telegraf;
 import { Mongooose } from '../DataBase/Mongo';
 import { MainMenu } from './States/MainMenu';
 import { States_Store } from './States/States_Store';
@@ -9,21 +9,21 @@ const moment = require('moment');
 const colors = require('colors');
 
 
-export class TG_bot{
+export class TG_bot {
 
     tg_bot_inst: any;
     private token: any;
     public static _users_states: any[];
-    public static instance : TG_bot;
+    public static instance: TG_bot;
 
-    constructor(){
+    constructor() {
 
         TG_bot.instance = this;
-        this.token     = token_dev;
+        this.token = token_dev;
         TG_bot._users_states = [];
         this.tg_bot_inst = new Telegraf(this.token);
 
-        this.tg_bot_inst.catch((error: any) =>  {
+        this.tg_bot_inst.catch((error: any) => {
             console.log('telegraf error', error.response, error.parameters, error.on || error);
         });
 
@@ -41,8 +41,9 @@ export class TG_bot{
         this.launch_bot();
     };
 
-    public async check_channel(channel_id: number, user_id: number): Promise<null|any>{
-        const isMemberCheck = await ( async() => {try{ return await this.tg_bot_inst.telegram.getChat(channel_id)} catch(err){return null;};
+    public async check_channel(channel_id: number, user_id: number): Promise<null | any> {
+        const isMemberCheck = await (async () => {
+            try { return await this.tg_bot_inst.telegram.getChat(channel_id) } catch (err) { return null; };
         })();
         const is_member = isMemberCheck;
 
@@ -50,12 +51,12 @@ export class TG_bot{
         console.log(is_member);
 
 
-        if (is_member){
-            const admins = await ( async() => {
-                try{ return await this.tg_bot_inst.telegram.getChatAdministrators(channel_id)} catch(err){return {err: err}};
+        if (is_member) {
+            const admins = await (async () => {
+                try { return await this.tg_bot_inst.telegram.getChatAdministrators(channel_id) } catch (err) { return { err: err } };
             })();
 
-            if(admins.err){
+            if (admins.err) {
                 console.log('!!!!!ADMIN CHECK ERR');
                 console.log(admins.err['response']);
 
@@ -68,7 +69,7 @@ export class TG_bot{
             console.log(isAdmin);
 
             const is_creator = (isAdmin && isAdmin.status === 'creator') ? true : false;
-                
+
             return {
                 isMember: is_member,
                 is_admin: is_creator
@@ -77,25 +78,25 @@ export class TG_bot{
         return null;
     };
 
-    public async get_chat_info(ch: number|string):Promise<null|any> {
-        try{
+    public async get_chat_info(ch: number | string): Promise<null | any> {
+        try {
             const ch_inf = await this.tg_bot_inst.telegram.getChat(ch).catch(console.error());
             return ch_inf
         }
-        catch(err){
+        catch (err) {
             return null;
         }
     };
 
-    private async launch_bot(){
+    private async launch_bot() {
 
-        this.tg_bot_inst.command('start', async (ctx : any) => {
-            
-            try{    
+        this.tg_bot_inst.command('start', async (ctx: any) => {
+
+            try {
 
                 const session = await Mongooose.getInstance().getSession(ctx.chat.id);
 
-                if(!session){
+                if (!session) {
                     await Mongooose.getInstance().createSession(ctx.update);
                 };
 
@@ -103,13 +104,13 @@ export class TG_bot{
 
                 return await TG_bot.changeState(new MainMenu(), ctx);
 
-            }catch(err){
+            } catch (err) {
                 console.log(colors.red('!!! MCR BOT :: on start err ...'))
                 console.log(err)
             };
         });
-  
-        this.tg_bot_inst.on('text', async (ctx : any) => {  
+
+        this.tg_bot_inst.on('text', async (ctx: any) => {
 
             await this._text_querry_handler(ctx);
         });
@@ -124,7 +125,7 @@ export class TG_bot{
 
         const time = moment().format()
         // if(this.token === token_dev){
-            console.log(colors.yellow('MCR:::DEV version ::: ') + time)
+        console.log(colors.yellow('MCR:::DEV version ::: ') + time)
         // }
         // else if( this.token === token_prod){
         //     console.log(colors.blue('MCR:::PROD version::: ') + time)
@@ -135,18 +136,18 @@ export class TG_bot{
     };
 
     public static getInstance(): TG_bot {
-        if(!TG_bot.instance){
+        if (!TG_bot.instance) {
             TG_bot.instance = new TG_bot();
         };
         return TG_bot.instance;
     };
 
-    public static async changeState(state : any, ctx: any){
+    public static async changeState(state: any, ctx: any) {
 
         const chat_id = ctx.chat.id;
         const user_state = TG_bot._users_states.find(user => user.id == chat_id);
 
-        if (!user_state){
+        if (!user_state) {
 
             const new_user = {
 
@@ -159,9 +160,9 @@ export class TG_bot{
         }
         else {
 
-            this._users_states.map(user => { 
+            this._users_states.map(user => {
 
-                if (user.id == chat_id){
+                if (user.id == chat_id) {
 
                     user.curr_state = state;
                     user.ctx = ctx
@@ -171,22 +172,22 @@ export class TG_bot{
 
         await TG_bot.getInstance()._delete_expired_keyboard(ctx);
         await TG_bot.getInstance()._delete_expired_notification(ctx);
-        
+
         return await state.render(ctx);
     };
 
-    public static async delete_last_message(ctx: any){
-        try{            
+    public static async delete_last_message(ctx: any) {
+        try {
             await ctx.deleteMessage();
         }
-        catch(err){};
+        catch (err) { };
     };
 
     public async send_notification(notification: any, for_user: number) {
 
         let user_state = TG_bot._users_states.find(state => state.id == for_user);
 
-        if (user_state){
+        if (user_state) {
 
             await TG_bot.getInstance()._delete_expired_keyboard(user_state.ctx);
 
@@ -201,7 +202,7 @@ export class TG_bot{
         }
         else {
 
-            const home_btn_clbck =  JSON.stringify({home_button:true});
+            const home_btn_clbck = JSON.stringify({ home_button: true });
 
             const inlineMessageRatingKeyboard = Markup.inlineKeyboard([
                 Markup.callbackButton("home_btn_txt", home_btn_clbck)
@@ -217,7 +218,7 @@ export class TG_bot{
         };
     };
 
-    private async _callbacks_handler(ctx: any){
+    private async _callbacks_handler(ctx: any) {
 
         const query = JSON.parse(ctx.update["callback_query"]["data"]);
 
@@ -225,7 +226,7 @@ export class TG_bot{
 
         // let user = await Application.getInstance().get_user(ctx.chat.id);
 
-        if (query.home_button){
+        if (query.home_button) {
 
             return await TG_bot.changeState(new MainMenu, ctx);
         };
@@ -241,20 +242,20 @@ export class TG_bot{
         //     return null;
         // };
 
-        if (!user_menu){
+        if (!user_menu) {
             return console.log(colors.red("!!! TG_bot : _callbacks_handler : Can NOT define menu of callback  !!!!!"))
         };
 
         user_menu.callbacks_handler(query, ctx);
     };
 
-    private async _text_querry_handler(ctx: any){
+    private async _text_querry_handler(ctx: any) {
 
         let user_state = TG_bot._users_states.find(state => state.id == ctx.chat.id);
 
-        if (!user_state){
+        if (!user_state) {
 
-            try {await ctx.deleteMessage();} catch(err) {};
+            try { await ctx.deleteMessage(); } catch (err) { };
 
             return null;
         };
@@ -266,7 +267,7 @@ export class TG_bot{
         await user_state.curr_state.messages_handler(query, ctx);
     };
 
-    private async _delete_expired_notification(ctx: any){
+    private async _delete_expired_notification(ctx: any) {
 
         let session = await Mongooose.getInstance().getSession(ctx.chat.id);
 
@@ -292,8 +293,8 @@ export class TG_bot{
         // };
     };
 
-    private async _delete_expired_keyboard(ctx : any){
-        let session   = await Mongooose.getInstance().getSession(ctx.chat.id)
+    private async _delete_expired_keyboard(ctx: any) {
+        let session = await Mongooose.getInstance().getSession(ctx.chat.id)
 
         // if (session.all_messages && session.all_messages.length){
 
