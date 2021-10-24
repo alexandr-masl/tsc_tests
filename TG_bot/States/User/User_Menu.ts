@@ -52,13 +52,13 @@ export class User_menu implements State {
 
     public async callbacks_handler(query: any, ctx: any): Promise<any>{
 
-        if (query.state_query == "about"){
-
-            return await ctx.reply(`Hello ${ctx.state.role}`)
+        if (query.state_query === "about"){
+            
+            return await ctx.reply(ctx.botInfo.username), TG_bot.changeState(new Settings_menu(), ctx);
         }
         else if (query.state_query === "back"){
 
-            return await TG_bot.changeState(new Settings_menu(), ctx);
+            return await TG_bot.changeState(new MainMenu(), ctx);
         }
         else {
             console.log(colors.red("!!!!!  MainMenu ERRR : Can NOT define callback_query, user:" + ctx.chat.id));
