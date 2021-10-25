@@ -54,7 +54,8 @@ export class Mongooose {
   async createSession(session) {
     try {
         const res = await this.session.findOne({ session_id : session.message.chat.id }).exec();
-        if (res == null) {
+
+        if (!res) {
             const new_session = await new this.session({
                 session_id : session.message.chat.id,
                 data : {
@@ -64,7 +65,8 @@ export class Mongooose {
                 }
             });
             await new_session.save();
-        }
+        };
+
         const session_result = await this.session.findOne({ session_id : session.message.chat.id }).exec();
         return session_result
     }
@@ -93,9 +95,11 @@ export class Mongooose {
   };
 
   async updateSession(session: any, command: string) {
+    
     if ( command === 'update'){    
       try {
           const time = moment().format();
+
           await this.session.updateOne({session_id : session.chat.id }, 
             { $set: { 
               data : {
@@ -107,7 +111,7 @@ export class Mongooose {
               $push: {all_messages: session.message_id},
             }).exec();
           const res_session = await this.session.findOne({session_id : session.chat.id}).exec();
-          return res_session
+          return res_session;
       }
       catch (err) {
           console.log(`Can not update session: session_id = ${session.session_id}`);

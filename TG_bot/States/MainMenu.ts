@@ -6,6 +6,7 @@ import { Markup } from 'telegraf';
 import { TG_bot } from '../TG_bot';
 import { Settings_menu } from './Settings/Settings_menu';
 import { User_menu } from '../States/User/User_Menu';
+import { Mongooose } from '../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
 
 
@@ -32,6 +33,8 @@ export class MainMenu implements State {
             // const buttons = Markup.button.url(['First Button', this._btn_1_calbck])
             // const button = Markup.keyboard(buttons: HideableKBtn[][])
 
+
+
             await ctx.reply( 
                 '<b>Main Menu</b>\n'
                 , Extra.HTML().markup((m) =>
@@ -45,8 +48,15 @@ export class MainMenu implements State {
                 )
             )
             .then(async (msg: any) => {
-                // await Mongooose.getInstance().updateSession(msg, 'update')
+
+                await Mongooose.getInstance().updateSession(msg, 'update');
             });
+
+            let session = await Mongooose.getInstance().getSession(ctx.chat.id);
+
+            console.log('--- Main Menu - Session ---')
+            console.log(session)
+
         }
         catch(err){
             const error = '🤬 menu err..'

@@ -5,6 +5,7 @@ const colors = require("colors");
 import { Markup } from 'telegraf';
 import { TG_bot } from '../../TG_bot';
 import { MainMenu } from '../MainMenu';
+import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
 
 
@@ -38,7 +39,7 @@ export class Settings_menu implements State {
                 )
             )
             .then(async (msg: any) => {
-                // await Mongooose.getInstance().updateSession(msg, 'update')
+                await Mongooose.getInstance().updateSession(msg, 'update')
             });
         }
         catch(err){

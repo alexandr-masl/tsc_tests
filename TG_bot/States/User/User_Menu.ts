@@ -7,6 +7,7 @@ import { TG_bot } from '../../TG_bot';
 import { MainMenu } from '../MainMenu';
 import { Settings_menu } from '../Settings/Settings_menu';
 import { userInfo } from 'os';
+import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
 
 
@@ -29,6 +30,7 @@ export class User_menu implements State {
         try{   
 
             await ctx.reply( 
+                
                 '<b>User Menu</b>\n'
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
@@ -40,7 +42,7 @@ export class User_menu implements State {
                 )
             )
             .then(async (msg: any) => {
-                // await Mongooose.getInstance().updateSession(msg, 'update')
+                await Mongooose.getInstance().updateSession(msg, 'update')
             });
         }
         catch(err){

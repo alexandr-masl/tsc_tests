@@ -94,11 +94,17 @@ export class TG_bot {
 
             try {
 
-                const session = await Mongooose.getInstance().getSession(ctx.chat.id);
+                let session = await Mongooose.getInstance().getSession(ctx.chat.id);
 
                 if (!session) {
-                    await Mongooose.getInstance().createSession(ctx.update);
+
+                    console.log('- creatting new session')
+
+                    session = await Mongooose.getInstance().createSession(ctx.update);
                 };
+
+                console.log('--- TG BOT - Session on Start ---')
+                console.log(session)
 
                 // const user = await Application.getInstance().get_user(ctx.chat.id)
 
@@ -171,7 +177,7 @@ export class TG_bot {
         };
 
         await TG_bot.getInstance()._delete_expired_keyboard(ctx);
-        await TG_bot.getInstance()._delete_expired_notification(ctx);
+        // await TG_bot.getInstance()._delete_expired_notification(ctx);
 
         return await state.render(ctx);
     };
@@ -195,7 +201,7 @@ export class TG_bot {
                 for_user,
                 notification
             ).then(async msg => {
-                // await Mongooose.getInstance().updateSession(msg, 'update')
+                await Mongooose.getInstance().updateSession(msg, 'update');
             });
 
             return await user_state.curr_state.render(user_state.ctx);
@@ -269,7 +275,7 @@ export class TG_bot {
 
     private async _delete_expired_notification(ctx: any) {
 
-        let session = await Mongooose.getInstance().getSession(ctx.chat.id);
+        // let session = await Mongooose.getInstance().getSession(ctx.chat.id);
 
         // if (session.notification){   
 
@@ -294,19 +300,20 @@ export class TG_bot {
     };
 
     private async _delete_expired_keyboard(ctx: any) {
+
         let session = await Mongooose.getInstance().getSession(ctx.chat.id)
 
-        // if (session.all_messages && session.all_messages.length){
+        if (session.all_messages && session.all_messages.length){
 
-        //     await session.all_messages.map(async msg => {
-        //         try{  
-        //             await ctx.deleteMessage(msg);
-        //          }catch(o){
-        //             return null;
-        //          };
-        //     });
-        //     const ctx_update = ctx.update.callback_query ? ctx.update.callback_query.message : ctx.update.message
-        //     const clear = await Mongooose.getInstance().updateSession(ctx_update, 'clear');
-        // };
+            await session.all_messages.map(async msg => {
+                try{  
+                    await ctx.deleteMessage(msg);
+                 }catch(o){
+                    return null;
+                 };
+            });
+            const ctx_update = ctx.update.callback_query ? ctx.update.callback_query.message : ctx.update.message
+            const clear = await Mongooose.getInstance().updateSession(ctx_update, 'clear');
+        };
     };
 };
