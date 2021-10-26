@@ -5,44 +5,39 @@ const colors = require("colors");
 import { Markup } from 'telegraf';
 import { TG_bot } from '../TG_bot';
 import { Settings_menu } from './Settings/Settings_menu';
-import { User_menu } from '../States/User/User_Menu';
+import { Trade_menu } from './Trade/Trade_menu';
 import { Mongooose } from '../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
-
+import { currentOperation } from './Settings/Settings_menu';
 
 export class MainMenu implements State {
 
     public state_id = "main_menu";
     
     _settings_menu_btn_calbck: string;
-    _user_menu_btn_calbck: string;
-    _btn_3_calbck: string;
-
+    _trade_menu_btn_calbck: string;
+    
 
     public constructor() {
 
-        this._settings_menu_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "first"});
-        this._user_menu_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "second"});
-        this._btn_3_calbck = JSON.stringify({state_name: this.state_id, state_query: "third"});
+        this._settings_menu_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "setting"});
+        this._trade_menu_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "trade"});
+    
     };
     
     public async render(ctx:any) {      
 
         try{   
 
-            // const buttons = Markup.button.url(['First Button', this._btn_1_calbck])
-            // const button = Markup.keyboard(buttons: HideableKBtn[][])
-
-
-
+            
             await ctx.reply( 
-                '<b>Main Menu</b>\n'
+                `<b>Main Menu</b>\nSelected options is - ${currentOperation}\nYou can change the option in Setting menu`
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         [
                             m.callbackButton('Settings', this._settings_menu_btn_calbck),
-                            m.callbackButton('User', this._user_menu_btn_calbck),
-                            m.callbackButton('❗️THIRD', this._btn_3_calbck)
+                            m.callbackButton('Trade', this._trade_menu_btn_calbck),
+                           
                         ]
                     ])
                 )
@@ -67,24 +62,20 @@ export class MainMenu implements State {
 
     public async callbacks_handler(query: any, ctx: any): Promise<any>{
 
-        if (query.state_query == "first"){
+        if (query.state_query == "setting"){
 
-            console.log(" ------->>>>> FIRST BUTTON TRIGERED !!!!!!!!!!!!!!!");
-            return await TG_bot.changeState(new Settings_menu, ctx);
+           return await TG_bot.changeState(new Settings_menu, ctx);
            
         }
-        else if (query.state_query === "second"){
-            console.log(" ------->>>>> SECOND BUTTON TRIGERED !!!!!!!!!!!!!!!");
-            return await TG_bot.changeState(new User_menu, ctx);
+        else if (query.state_query === "trade"){
+           
+            return await TG_bot.changeState(new Trade_menu, ctx);
 
         }
-        else if (query.state_query === "third"){
-
-
-        }
+        
         else {
 
-            console.log(colors.red("!!!!!  MainMenu ERRR : Can NOT define callback_query, user:" + ctx.chat.id));
+            console.log(colors.red("!!!!!  MainMenu ERR : Can NOT define callback_query, user:" + ctx.chat.id));
             return null;
         };
     };
