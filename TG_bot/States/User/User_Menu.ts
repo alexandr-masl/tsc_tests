@@ -56,7 +56,7 @@ export class User_menu implements State {
 
         if (query.state_query === "about"){
             
-            return await ctx.reply(ctx.botInfo.username), TG_bot.changeState(new Settings_menu(), ctx);
+            return await TG_bot.instance.send_notification(`your chat.id - ${ctx.chat.id}`, ctx.chat.id);
         }
         else if (query.state_query === "back"){
 
