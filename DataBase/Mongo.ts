@@ -1,4 +1,4 @@
-import { sessionSchema } from "./Objects";
+import { sessionSchema, userConfigSchema } from "./Objects";
 
 const mongoose = require('mongoose')
 const moment       = require('moment')
@@ -6,7 +6,8 @@ const moment       = require('moment')
 export class Mongooose {
   
   private static instance: Mongooose;
-  public session            : any;
+  public session : any;
+  public users_configs: any;
 
   public static getInstance(): Mongooose {
     if (!Mongooose.instance) {
@@ -49,6 +50,60 @@ export class Mongooose {
     connectWithRetry();
 
     this.session = new mongoose.model('Session', sessionSchema);
+    this.users_configs = new mongoose.model('Config', userConfigSchema);
+  };
+
+  async create_user_config(chat_id: number){
+    try {
+
+      const res = await this.users_configs.findOne({config_id: chat_id}).exec();
+
+      if (!res) {
+          const new_session = await new this.users_configs({
+            config_id: chat_id
+          });
+          await new_session.save();
+      };
+
+      const res_update = await this.users_configs.findOne({config_id: chat_id}).exec();
+      return res_update
+    }
+    catch (err) {
+        console.log(`Can not create user config = ${chat_id}, err = ${err}`);
+        throw err;
+    }
+  };
+
+  async get_user_config(chat_id: number){
+
+    const config = await this.users_configs.findOne({config_id: chat_id}).exec();
+
+    if (!config){
+
+      return await this.create_user_config(chat_id)
+    }
+
+    return config;
+  };
+
+  async update_users_trade_options(chat_id: number, new_trade_type: string){
+
+    try {
+
+        await this.users_configs.updateOne({config_id: chat_id}, 
+          { $set: { 
+              trade_options : new_trade_type
+            }
+        }).exec();
+
+        const res_update = await this.users_configs.findOne({config_id: chat_id}).exec();
+        return res_update
+    }
+    catch (err) {
+        console.log(`Can not update trade options = ${chat_id}`);
+        throw err;
+    }
+
   };
 
   async createSession(session) {
@@ -206,5 +261,7 @@ export class Mongooose {
       return {err: "unknow request.."};
     };
   };
+
+
 
 };

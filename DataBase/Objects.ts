@@ -33,4 +33,17 @@ export const sessionSchema = new mongoose.Schema({
   }
 });
 
+export const userConfigSchema = new mongoose.Schema({
+
+  config_id: {
+    type: Number,
+    required: true,
+  },
+  trade_options: {
+    type: String,
+    default: "buy",
+  }
+
+});
+
 

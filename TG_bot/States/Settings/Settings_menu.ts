@@ -9,7 +9,7 @@ import { Trade_menu } from '../Trade/Trade_menu';
 import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
 
-export let currentOperation: string = "buy"
+
 export class Settings_menu implements State {
 
     public state_id = "settings_menu";
@@ -36,12 +36,9 @@ export class Settings_menu implements State {
                 '<b>Settings Menu</b>\nChoose trade operation'
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
-                        [
-                            m.callbackButton('Buy coins', this._buy_btn_calbck),
-                            m.callbackButton('Sell coins', this._sell_btn_calbck),
-                            m.callbackButton('Hold coins', this._hold_btn_calbck),
-                            m.callbackButton('Back', this._back_btn_calbck)
-                        ]
+
+                        [m.callbackButton('Buy coins', this._buy_btn_calbck), m.callbackButton('Sell coins', this._sell_btn_calbck), m.callbackButton('Hold coins', this._hold_btn_calbck)],
+                        [m.callbackButton('Back', this._back_btn_calbck)]
                     ])
                 )
             )
@@ -58,26 +55,40 @@ export class Settings_menu implements State {
 
     public async callbacks_handler(query: any, ctx: any): Promise<any>{
 
-        if (query.state_query == "buy"){
-            currentOperation = "buy"
-            return await TG_bot.changeState(new Trade_menu(), ctx);
-        }
-        else if (query.state_query === "sell"){
-            currentOperation = "sell"
-            return await TG_bot.changeState(new Trade_menu(), ctx);
-        }
-        else if (query.state_query === "hold"){
-            currentOperation = "hold"
-            return await TG_bot.changeState(new Trade_menu(), ctx);
-        }
-        else if (query.state_query === "back"){
+        const selected_buy_option = query.state_query;
 
+        if (selected_buy_option === "back")
             return await TG_bot.changeState(new MainMenu(), ctx);
-        }
+
         else {
-            console.log(colors.red("!!!!!  MainMenu ERRR : Can NOT define callback_query, user:" + ctx.chat.id));
-            return null;
-        };
+
+            await Mongooose.getInstance().update_users_trade_options(ctx.chat.id, selected_buy_option)
+            return await TG_bot.changeState(new Trade_menu(), ctx);
+        } 
+
+
+        // if (selected_buy_option == "buy"){
+
+        //     await Mongooose.getInstance().update_users_trade_options(ctx.chat.id, selected_buy_option)
+
+        //     return await TG_bot.changeState(new Trade_menu(), ctx);
+        // }
+        // else if (selected_buy_option === "sell"){
+
+        //     return await TG_bot.changeState(new Trade_menu(), ctx);
+        // }
+        // else if (selected_buy_option === "hold"){
+
+        //     return await TG_bot.changeState(new Trade_menu(), ctx);
+        // }
+        // else if (selected_buy_option === "back"){
+
+        //     return await TG_bot.changeState(new MainMenu(), ctx);
+        // }
+        // else {
+        //     console.log(colors.red("!!!!!  MainMenu ERRR : Can NOT define callback_query, user:" + ctx.chat.id));
+        //     return null;
+        // };
     };
 
     public async messages_handler(query: any, ctx: any){

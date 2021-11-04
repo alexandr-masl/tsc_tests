@@ -7,31 +7,33 @@ import { Trade_menu } from '../Trade/Trade_menu';
 import { userInfo } from 'os';
 import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
-import { currentOperation } from '../Settings/Settings_menu';
-import { currentCoin } from './Trade_menu';
 
 
 export class Confirm_menu implements State {
 
     public state_id = "confirm_menu";
 
+    _coin_name: string;
     _confirm_btn_calbck: string;
     _cancel_btn_calbck: string;
 
 
-    public constructor() {
+    public constructor(coin_name: string) {
 
-        this._confirm_btn_calbck = JSON.stringify({ state_name: this.state_id, state_query: "confirm" });
-        this._cancel_btn_calbck = JSON.stringify({ state_name: this.state_id, state_query: "cancel" });
+        this._coin_name = coin_name;
+        this._confirm_btn_calbck = JSON.stringify({state_name: this.state_id, state_query:"confirm",pl:coin_name});
+        this._cancel_btn_calbck = JSON.stringify({state_name: this.state_id, state_query:"cancel",pl:coin_name});
     };
 
     public async render(ctx: any) {
 
         try {
 
+            const user_config = await Mongooose.getInstance().get_user_config(ctx.chat.id)
+
             await ctx.reply(
 
-                `Are you sure you want to ${currentOperation} ${currentCoin}?`
+                `Are you sure you want to ${user_config.trade_options} ${this._coin_name}?`
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         [

@@ -10,7 +10,7 @@ import { userInfo } from 'os';
 import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
 
-export let currentCoin: any = "BTC"
+
 
 export class Trade_menu implements State {
 
@@ -36,7 +36,6 @@ export class Trade_menu implements State {
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         [
-
                             m.callbackButton('Back', this._back_btn_calbck)
                         ]
                     ])
@@ -70,7 +69,10 @@ export class Trade_menu implements State {
             /// тут надо как-то ловить сообщение пользователя и сохранять в currenCoin и будет збс
             ///по типу hears(/^[A-Z]+$/i, async ctx => {currentCoin = ctx.message.text} но не работает
 
-            return await TG_bot.changeState(new Confirm_menu(), ctx);
+
+            const coin_name = query;
+
+            return await TG_bot.changeState(new Confirm_menu(coin_name), ctx);
                   
         }
         catch (err) { };

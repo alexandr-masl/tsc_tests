@@ -44,11 +44,12 @@ export class States_Store {
         }
         else if (state_id === "confirm_menu" ){
 
-            return new Confirm_menu;
+            const coin_name = query.pl
+
+            return new Confirm_menu(coin_name);
         }
         else {
 
-            
             return null;
         };
     };

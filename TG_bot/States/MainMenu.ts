@@ -8,7 +8,7 @@ import { Settings_menu } from './Settings/Settings_menu';
 import { Trade_menu } from './Trade/Trade_menu';
 import { Mongooose } from '../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
-import { currentOperation } from './Settings/Settings_menu';
+
 
 export class MainMenu implements State {
 
@@ -29,9 +29,11 @@ export class MainMenu implements State {
 
         try{   
 
+            const user_config = await Mongooose.getInstance().get_user_config(ctx.chat.id)
+
             
             await ctx.reply( 
-                `<b>Main Menu</b>\nSelected options is - ${currentOperation}\nYou can change the option in Setting menu`
+                `<b>Main Menu</b>\nSelected options is - ${user_config.trade_options}\nYou can change the option in Setting menu`
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         [
@@ -48,9 +50,6 @@ export class MainMenu implements State {
             });
 
             let session = await Mongooose.getInstance().getSession(ctx.chat.id);
-
-            console.log('--- Main Menu - Session ---')
-            console.log(session)
 
         }
         catch(err){
