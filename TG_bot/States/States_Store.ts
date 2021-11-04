@@ -1,7 +1,8 @@
 import { State } from '../State';
 import { MainMenu } from './MainMenu';
 import { Settings_menu } from './Settings/Settings_menu';
-import { User_menu } from './User/User_Menu';
+import { Trade_menu } from './Trade/Trade_menu';
+import { Confirm_menu } from './Trade/Confirm_menu';
 
 export class States_Store {
 
@@ -37,13 +38,17 @@ export class States_Store {
 
             return new Settings_menu;
         }
-        else if (state_id === "user_menu" ){
+        else if (state_id === "trade_menu" ){
 
-            return new User_menu;
+            return new Trade_menu;
+        }
+        else if (state_id === "confirm_menu" ){
+
+            return new Confirm_menu;
         }
         else {
 
-            //hghghghghgh
+            
             return null;
         };
     };

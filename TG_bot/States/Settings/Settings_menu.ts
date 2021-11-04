@@ -5,21 +5,26 @@ const colors = require("colors");
 import { Markup } from 'telegraf';
 import { TG_bot } from '../../TG_bot';
 import { MainMenu } from '../MainMenu';
+import { Trade_menu } from '../Trade/Trade_menu';
 import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
 
-
+export let currentOperation: string = "buy"
 export class Settings_menu implements State {
 
     public state_id = "settings_menu";
     
-    _ok_btn_calbck: string;
+    _buy_btn_calbck: string;
+    _sell_btn_calbck: string;
+    _hold_btn_calbck: string;
     _back_btn_calbck: string;
 
 
     public constructor() {
 
-        this._ok_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "ok"});
+        this._buy_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "buy"});
+        this._sell_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "sell"});
+        this._hold_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "hold"});
         this._back_btn_calbck = JSON.stringify({state_name: this.state_id, state_query: "back"});
     };
     
@@ -28,11 +33,13 @@ export class Settings_menu implements State {
         try{   
 
             await ctx.reply( 
-                '<b>Settings Menu</b>\n'
+                '<b>Settings Menu</b>\nChoose trade operation'
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         [
-                            m.callbackButton('Ok', this._ok_btn_calbck),
+                            m.callbackButton('Buy coins', this._buy_btn_calbck),
+                            m.callbackButton('Sell coins', this._sell_btn_calbck),
+                            m.callbackButton('Hold coins', this._hold_btn_calbck),
                             m.callbackButton('Back', this._back_btn_calbck)
                         ]
                     ])
@@ -51,9 +58,17 @@ export class Settings_menu implements State {
 
     public async callbacks_handler(query: any, ctx: any): Promise<any>{
 
-        if (query.state_query == "ok"){
-
-            return await TG_bot.changeState(new Settings_menu(), ctx);
+        if (query.state_query == "buy"){
+            currentOperation = "buy"
+            return await TG_bot.changeState(new Trade_menu(), ctx);
+        }
+        else if (query.state_query === "sell"){
+            currentOperation = "sell"
+            return await TG_bot.changeState(new Trade_menu(), ctx);
+        }
+        else if (query.state_query === "hold"){
+            currentOperation = "hold"
+            return await TG_bot.changeState(new Trade_menu(), ctx);
         }
         else if (query.state_query === "back"){
 
