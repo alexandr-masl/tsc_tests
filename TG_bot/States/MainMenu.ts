@@ -25,7 +25,7 @@ export class MainMenu implements State {
     
     };
     
-    public async render(ctx:any) {      
+    public async render (ctx:any) {      
 
         try{   
 

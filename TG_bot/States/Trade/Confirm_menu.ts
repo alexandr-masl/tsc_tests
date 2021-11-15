@@ -21,8 +21,8 @@ export class Confirm_menu implements State {
     public constructor(coin_name: string) {
 
         this._coin_name = coin_name;
-        this._confirm_btn_calbck = JSON.stringify({state_name: this.state_id, state_query:"confirm",pl:coin_name});
-        this._cancel_btn_calbck = JSON.stringify({state_name: this.state_id, state_query:"cancel",pl:coin_name});
+        this._confirm_btn_calbck = JSON.stringify({state_name:this.state_id,state_query:"con",pl:coin_name});
+        this._cancel_btn_calbck = JSON.stringify({state_name:this.state_id,state_query:"can",pl:coin_name});
     };
 
     public async render(ctx: any) {
@@ -56,12 +56,12 @@ export class Confirm_menu implements State {
 
     public async callbacks_handler(query: any, ctx: any): Promise<any> {
 
-        if (query.state_query === "confirm") {
+        if (query.state_query === "con") {
             return await TG_bot.instance.send_notification('Done!', ctx.chat.id),
             TG_bot.changeState(new MainMenu(), ctx);
         
         }
-        else if (query.state_query === "cancel") {
+        else if (query.state_query === "can") {
 
             return await TG_bot.changeState(new Trade_menu(), ctx);
         }
