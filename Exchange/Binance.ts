@@ -117,19 +117,6 @@ export class BinanceExch implements Exchange {
    }
 
    price_stream(symbol : string, callback: (o: any) => any){
-      const coin_data = {
-         symbol: symbol,
-         eventTime:[],
-         open: [],
-         high: [],
-         low: [],
-         close: [],
-         volume: [],
-         trades: [],
-         quoteVolume: [],
-         buyVolume: [],
-         quoteBuyVolume: []
-      }
 
       const candle = this.client.ws.candles(symbol, '1m', candle => {
 
@@ -140,13 +127,18 @@ export class BinanceExch implements Exchange {
    };
 
    async exch_balance(coin : string){  
-      const balance = await this.client.accountInfo().then(o =>{
+
+      const balance = await this.client.accountInfo().then(o => {
+
          if (o.balances.filter(asset => asset.asset === coin).length > 0){  
+
             return  o.balances.find(asset => asset.asset === coin); 
          }
          else{
+
             return null;
          }
+         
       });
       
       return {
