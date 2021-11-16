@@ -1,6 +1,8 @@
 
 {
     "tokens":{
-        "token_dev"  :"1904609666:AAGcPH8s3P0jzG0YtisRs6zSKq2yBEkrl5k"
+        "token_dev"  :"1904609666:AAGcPH8s3P0jzG0YtisRs6zSKq2yBEkrl5k",
+        "ApiKey" : "YMg8u4gbhQuOnRAsYkyn1QRZncmcHQ8wYCB3yehIUrGtR60yyumO2Gr6Mlj8O6Co",
+        "SecretKey" : "nbRaB7TbKiez0Hd2yPR3E2vxMdqGQrSRHlK7IBhrZwH6Cxt55KdPngV284EHYZLB"
     }
 }

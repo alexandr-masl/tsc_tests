@@ -1,11 +1,13 @@
 {
   "dependencies": {
+    "binance-api-node": "^0.11.24",
     "colors": "^1.4.0",
     "moment": "^2.29.1",
     "mongoose": "^6.0.11",
     "nodemon": "^2.0.14",
     "telegraf": "^3.38.0",
-    "telegram-typings": "^5.0.0"
+    "telegram-typings": "^5.0.0",
+    "ws": "^8.2.3"
   },
   "devDependencies": {
     "@types/node": "^16.11.1"
