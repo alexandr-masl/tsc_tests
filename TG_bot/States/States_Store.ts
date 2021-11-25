@@ -2,6 +2,8 @@ import { State } from '../State';
 import { MainMenu } from './MainMenu';
 import { Settings_menu } from './Settings/Settings_menu';
 import { Trade_menu } from './Trade/Trade_menu';
+import { Price_menu } from './Trade/Price_menu';
+import { Quantity_menu } from './Trade/Quantity_menu';
 import { Confirm_menu } from './Trade/Confirm_menu';
 
 export class States_Store {
@@ -42,12 +44,20 @@ export class States_Store {
 
             return new Trade_menu;
         }
+        else if (state_id === "price_menu" ){
+
+
+            return new Price_menu();
+        }
+    
+        else if (state_id === "quantity_menu" ){
+
+            return new Quantity_menu;
+    }
         else if (state_id === "confirm_menu" ){
 
-            const coin_name = query.pl
-
-            return new Confirm_menu(coin_name);
-        }
+             return new Confirm_menu();
+    }
         else {
 
             return null;

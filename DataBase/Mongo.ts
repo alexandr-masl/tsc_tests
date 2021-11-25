@@ -105,6 +105,63 @@ export class Mongooose {
     }
 
   };
+  async update_users_quantity(chat_id: number, new_quantity: number){
+
+    try {
+
+        await this.users_configs.updateOne({config_id: chat_id}, 
+          { $set: { 
+              quantity : new_quantity
+            }
+        }).exec();
+
+        const res_update = await this.users_configs.findOne({config_id: chat_id}).exec();
+        return res_update
+    }
+    catch (err) {
+        console.log(`Can not update quantity = ${chat_id}`);
+        throw err;
+    }
+
+  };
+  async update_users_price(chat_id: number, new_price: number){
+
+    try {
+
+        await this.users_configs.updateOne({config_id: chat_id}, 
+          { $set: { 
+              price : new_price
+            }
+        }).exec();
+
+        const res_update = await this.users_configs.findOne({config_id: chat_id}).exec();
+        return res_update
+    }
+    catch (err) {
+        console.log(`Can not update price = ${chat_id}`);
+        throw err;
+    }
+
+  };
+  async update_users_coin(chat_id: number, new_coin: number){
+
+    try {
+
+        await this.users_configs.updateOne({config_id: chat_id}, 
+          { $set: { 
+              coin : new_coin
+            }
+        }).exec();
+
+        const res_update = await this.users_configs.findOne({config_id: chat_id}).exec();
+        return res_update
+    }
+    catch (err) {
+        console.log(`Can not update coin = ${chat_id}`);
+        throw err;
+    }
+
+  };
 
   async createSession(session) {
     try {

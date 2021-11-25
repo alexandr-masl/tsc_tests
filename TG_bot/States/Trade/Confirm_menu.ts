@@ -7,23 +7,21 @@ import { Trade_menu } from '../Trade/Trade_menu';
 import { userInfo } from 'os';
 import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
-import { binance_client } from '../../../test';
+import { binance_client } from './Trade_menu';
 
 
 export class Confirm_menu implements State {
 
     public state_id = "confirm_menu";
 
-    _coin_name: string;
     _confirm_btn_calbck: string;
-    _cancel_btn_calbck: string;
+    _back_btn_calbck: string;
 
 
-    public constructor(coin_name: string) {
+    public constructor() {
 
-        this._coin_name = coin_name;
-        this._confirm_btn_calbck = JSON.stringify({ state_name: this.state_id, state_query: "con", pl: coin_name });
-        this._cancel_btn_calbck = JSON.stringify({ state_name: this.state_id, state_query: "can", pl: coin_name });
+        this._confirm_btn_calbck = JSON.stringify({ state_name: this.state_id, state_query: "con"});
+        this._back_btn_calbck = JSON.stringify({ state_name: this.state_id, state_query: "back"});
     };
 
     public async render(ctx: any) {
@@ -34,12 +32,12 @@ export class Confirm_menu implements State {
 
             await ctx.reply(
 
-                `Are you sure you want to ${user_config.trade_options} ${this._coin_name}?`
+                `You choose ${user_config.coin}\nside: ${user_config.trade_options}\nquantity: ${user_config.quantity}\nprice: ${user_config.price}\nAre you sure?`
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         [
                             m.callbackButton('Confirm', this._confirm_btn_calbck),
-                            m.callbackButton('Cancel', this._cancel_btn_calbck)
+                            m.callbackButton('Back', this._back_btn_calbck)
                         ]
                     ])
                 )
@@ -58,20 +56,18 @@ export class Confirm_menu implements State {
     public async callbacks_handler(query: any, ctx: any): Promise<any> {
 
         if (query.state_query === "con") {
-            // return await TG_bot.instance.send_notification('Done!', ctx.chat.id),
-            // TG_bot.changeState(new MainMenu(), ctx);
             const user_config = await Mongooose.getInstance().get_user_config(ctx.chat.id)
-            // async function createOrder() {
-            //     await binance_client.order({
-            //         symbol: `${coin_name}BTC`,
-            //         side: `${user_config.trade_options.toUpperCase()}`,
-            //         quantity: '100',
-            //         price: '0.0002',
-            //     })
-            // }
-            // createOrder();    
+            async function createOrder() {
+                await binance_client.order({
+                    symbol: `${user_config.coin.toUpperCase()}`,
+                    side: `${user_config.trade_options.toUpperCase()}`,
+                    quantity: `${user_config.quantity}`,
+                    price: `${user_config.price}`,
+                })
+            }
+            createOrder();    
         }
-        else if (query.state_query === "can") {
+        else if (query.state_query === "back") {
 
             return await TG_bot.changeState(new Trade_menu(), ctx);
         }

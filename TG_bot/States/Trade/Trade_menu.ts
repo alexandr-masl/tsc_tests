@@ -3,6 +3,7 @@ const colors = require("colors");
 import { TG_bot } from '../../TG_bot';
 import { MainMenu } from '../MainMenu';
 import { Confirm_menu } from '../Trade/Confirm_menu';
+import { Price_menu } from '../Trade/Price_menu';
 import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
 
@@ -28,7 +29,7 @@ export class Trade_menu implements State {
     public async render(ctx: any) {
         try {
             await ctx.reply(
-                'What coin are you interested in?\nSend me the name.\n'
+                'What pair are you interested in?\nSend me the symbol\n(for example, BTCUSDT).\n'
                 , Extra.HTML().markup((m) =>
                     m.inlineKeyboard([
                         
@@ -45,7 +46,7 @@ export class Trade_menu implements State {
         catch (err) {
             const error = '🤬 menu err..'
             console.log(err)
-            // await MCR_bot.changeState(new Err_menu(error), ctx)
+            
         };
     };
 
@@ -56,9 +57,9 @@ export class Trade_menu implements State {
         else if (query.state_query === "blnc") {
             async function get_balance (): Promise<void>{
 
-                const balance = await binance_client.accountInfo().then((o: { balances: any[]; }) =>  { 
-                  const not_null_balances = o.balances.filter((asset: { free: any; locked: any; }) => Number(asset.free) > 0 || Number(asset.locked) > 0 ) 
-                  return  not_null_balances
+                const balance = await binance_client.accountInfo().then((n: { balances: any[]; }) =>  { 
+                  const positive_balance = n.balances.filter((asset: { free: any; locked: any; }) => Number(asset.free) > 0 || Number(asset.locked) > 0 ) 
+                  return  positive_balance
                })
            
                for (let n = 0; n < balance.length; n++){
@@ -82,8 +83,10 @@ export class Trade_menu implements State {
     };
     public async messages_handler(query: any, ctx: any) {
         try {
-            const coin_name = query.toUpperCase();
-            return await TG_bot.changeState(new Confirm_menu(coin_name), ctx);
+            const selected_pair_name = query.toUpperCase();
+            await Mongooose.getInstance().update_users_coin(ctx.chat.id, selected_pair_name)
+            // return await TG_bot.changeState(new Trade_menu(), ctx);
+            return await TG_bot.changeState(new Price_menu(), ctx);
         }
         catch (err) { };
     };

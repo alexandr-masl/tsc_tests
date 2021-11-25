@@ -42,6 +42,16 @@ export const userConfigSchema = new mongoose.Schema({
   trade_options: {
     type: String,
     default: "buy",
+  },
+  quantity:{
+    type: Number,
+  },
+  price: {
+    type: Number,
+  },
+  coin:{
+    type: String,
+    default: "BTCUSDT",
   }
 
 });
