@@ -65,7 +65,8 @@ export class Confirm_menu implements State {
                     price: `${user_config.price}`,
                 })
             }
-            createOrder();    
+            createOrder();
+            return await TG_bot.changeState(new Trade_menu(), ctx);    
         }
         else if (query.state_query === "back") {
 
