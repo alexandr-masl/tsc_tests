@@ -103,9 +103,6 @@ export class TG_bot {
                     session = await Mongooose.getInstance().createSession(ctx.update);
                 };
 
-                console.log('--- TG BOT - Session on Start ---')
-                console.log(session)
-
                 // const user = await Application.getInstance().get_user(ctx.chat.id)
 
                 return await TG_bot.changeState(new MainMenu(), ctx);

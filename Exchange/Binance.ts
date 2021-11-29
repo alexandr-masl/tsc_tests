@@ -130,15 +130,14 @@ export class BinanceExch implements Exchange {
 
       const balance = await this.client.accountInfo().then(o => {
 
-         if (o.balances.filter(asset => asset.asset === coin).length > 0){  
+         if (o.balances.filter(asset => asset.asset === coin).length){  
 
             return  o.balances.find(asset => asset.asset === coin); 
          }
          else{
 
             return null;
-         }
-         
+         } 
       });
       
       return {
@@ -155,10 +154,8 @@ export class BinanceExch implements Exchange {
          })
 
          if(balance){ 
-            return {
-               method: 'all_balances',
-               recived: balance
-            }
+            
+            return balance
          }
          else{ 
             return null;

@@ -42,9 +42,9 @@ export class Confirm_menu implements State {
                     ])
                 )
             )
-                .then(async (msg: any) => {
-                    await Mongooose.getInstance().updateSession(msg, 'update')
-                });
+            .then(async (msg: any) => {
+                await Mongooose.getInstance().updateSession(msg, 'update')
+            });
         }
         catch (err) {
             const error = '🤬 menu err..'
@@ -56,16 +56,31 @@ export class Confirm_menu implements State {
     public async callbacks_handler(query: any, ctx: any): Promise<any> {
 
         if (query.state_query === "con") {
+
             const user_config = await Mongooose.getInstance().get_user_config(ctx.chat.id)
-            async function createOrder() {
-                await binance_client.order({
-                    symbol: `${user_config.coin.toUpperCase()}`,
-                    side: `${user_config.trade_options.toUpperCase()}`,
-                    quantity: `${user_config.quantity}`,
-                    price: `${user_config.price}`,
-                })
-            }
-            createOrder();
+
+
+            const place_order = await binance_client.order({
+                symbol: `${user_config.coin.toUpperCase()}`,
+                side: `${user_config.trade_options.toUpperCase()}`,
+                quantity: `${user_config.quantity}`,
+                price: `${user_config.price}`
+            })
+            .then(o => {return o }).catch(o => { return o })
+
+            // if (place_order.toString().includes("Error")){
+
+            console.log('---- PLACED ORDER RESULT')
+            console.log(place_order)
+
+            const error_txt = place_order.toString()
+
+            await TG_bot.getInstance().tg_bot_inst.telegram.sendMessage(
+                ctx.chat.id,
+                error_txt
+            )
+            // }
+
             return await TG_bot.changeState(new Trade_menu(), ctx);    
         }
         else if (query.state_query === "back") {
