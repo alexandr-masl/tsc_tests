@@ -27,15 +27,6 @@ export class TG_bot {
             console.log('telegraf error', error.response, error.parameters, error.on || error);
         });
 
-        // this.tg_bot_inst.use(async (ctx: any, next: any) => {
-
-        //     const txt = ctx.channelPost;
-
-        //     if (txt){
-        //         this.channel_update(txt, ctx);
-        //     }
-        //     await next();
-        // });
 
         this.tg_bot_inst.launch();
         this.launch_bot();
@@ -103,7 +94,7 @@ export class TG_bot {
                     session = await Mongooose.getInstance().createSession(ctx.update);
                 };
 
-                // const user = await Application.getInstance().get_user(ctx.chat.id)
+               
 
                 return await TG_bot.changeState(new MainMenu(), ctx);
 
@@ -127,15 +118,8 @@ export class TG_bot {
         });
 
         const time = moment().format()
-        // if(this.token === token_dev){
-        console.log(colors.yellow('MCR:::DEV version ::: ') + time)
-        // }
-        // else if( this.token === token_prod){
-        //     console.log(colors.blue('MCR:::PROD version::: ') + time)
-        // }
-        // else if( this.token === token_test){
-        //     console.log(colors.green('MCR:::TEST version ::: ') + time)
-        // };
+        console.log(colors.yellow('MahaBot:::TEST version:::') + time)
+       
     };
 
     public static getInstance(): TG_bot {
@@ -174,7 +158,7 @@ export class TG_bot {
         };
 
         await TG_bot.getInstance()._delete_expired_keyboard(ctx);
-        // await TG_bot.getInstance()._delete_expired_notification(ctx);
+       
 
         return await state.render(ctx);
     };
@@ -208,7 +192,7 @@ export class TG_bot {
             const home_btn_clbck = JSON.stringify({ home_button: true });
 
             const inlineMessageRatingKeyboard = Markup.inlineKeyboard([
-                Markup.callbackButton("home_btn_txt", home_btn_clbck)
+                Markup.callbackButton("MainMenu", home_btn_clbck)
             ]).extra();
 
             await this.tg_bot_inst.telegram.sendMessage(
@@ -216,7 +200,7 @@ export class TG_bot {
                 notification,
                 inlineMessageRatingKeyboard
             ).then(async msg => {
-                // await Mongooose.getInstance().updateSession(msg, 'update')
+               
             });
         };
     };
@@ -227,8 +211,7 @@ export class TG_bot {
 
         if (!query) return null;
 
-        // let user = await Application.getInstance().get_user(ctx.chat.id);
-
+        
         if (query.home_button) {
 
             return await TG_bot.changeState(new MainMenu, ctx);
@@ -236,16 +219,7 @@ export class TG_bot {
 
         const user_menu = States_Store.getInstance().get_user_state(query);
 
-        // const user_state = TG_bot._users_states.find(user => user.id == ctx.chat.id);
-
-        // if (user_state && user_state.curr_state.state_id !== user_menu.state_id){
-
-        //     // await ctx.deleteMessage(ctx.update["callback_query"].message.message_id);
-
-        //     return null;
-        // };
-
-        if (!user_menu) {
+               if (!user_menu) {
             return console.log(colors.red("!!! TG_bot : _callbacks_handler : Can NOT define menu of callback  !!!!!"))
         };
 
@@ -265,35 +239,12 @@ export class TG_bot {
 
         const query = ctx.update.message.text;
 
-        // await Mongooose.getInstance().updateSession(ctx.update.message, 'update');
-
         await user_state.curr_state.messages_handler(query, ctx);
     };
 
     private async _delete_expired_notification(ctx: any) {
 
-        // let session = await Mongooose.getInstance().getSession(ctx.chat.id);
-
-        // if (session.notification){   
-
-        //     if (session.notification.status === 'expired'){
-
-        //         if ( session.notification.message_id) {   
-
-        //             try {  
-        //                 await ctx.deleteMessage(session.notification.message_id)
-        //             }catch(o){}
-
-        //             return await Mongooose.getInstance().updateNotification(ctx.chat.id, '', null);
-        //         };
-        //     }
-        //     else {
-        //         return await Mongooose.getInstance().updateNotification(ctx.chat.id, 'expired', session.notification.message_id)
-        //     };
-        // }
-        // else{
-        //     return null;
-        // };
+       
     };
 
     private async _delete_expired_keyboard(ctx: any) {

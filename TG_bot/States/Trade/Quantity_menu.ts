@@ -1,7 +1,6 @@
 import { State } from '../../State';
 const colors = require("colors");
 import { TG_bot } from '../../TG_bot';
-import { MainMenu } from '../MainMenu';
 import { Confirm_menu } from '../Trade/Confirm_menu';
 import { Mongooose } from '../../../DataBase/Mongo';
 import { Trade_menu } from './Trade_menu';
@@ -37,7 +36,7 @@ export class Quantity_menu implements State {
         }
         catch (err) {
             const error = '🤬 menu err..'
-            console.log(err)
+            console.log(error)
             
         };
     };
@@ -47,7 +46,7 @@ export class Quantity_menu implements State {
             return await TG_bot.changeState(new Trade_menu(), ctx);
         }
         else {
-            console.log(colors.red("!!!!!  TradeMenu ERR : Can NOT define callback_query, user:" + ctx.chat.id));
+            console.log(colors.red("!!!!Menu ERR : Can NOT define callback_query, user:" + ctx.chat.id));
             return null;
         };
     };
@@ -55,10 +54,12 @@ export class Quantity_menu implements State {
         try {
             const selected_quantity = query;
             await Mongooose.getInstance().update_users_quantity(ctx.chat.id, selected_quantity)
-            // return await TG_bot.changeState(new Trade_menu(), ctx);
             return await TG_bot.changeState(new Confirm_menu(), ctx);
         }
-        catch (err) { };
+        catch (err) { 
+            const error = '🤬 menu err..'
+            console.log(error)
+        };
     };
 
 };

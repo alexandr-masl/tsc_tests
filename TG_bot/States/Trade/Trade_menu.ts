@@ -2,20 +2,11 @@ import { State } from '../../State';
 const colors = require("colors");
 import { TG_bot } from '../../TG_bot';
 import { MainMenu } from '../MainMenu';
-import { Confirm_menu } from '../Trade/Confirm_menu';
 import { Price_menu } from '../Trade/Price_menu';
 import { Mongooose } from '../../../DataBase/Mongo';
 import { BinanceExch } from '../../../Exchange/Binance';
 const Extra = require('telegraf/extra');
-
-const { tokens: { ApiKey } } = require('../../../../settings.json');
-const { tokens: { SecretKey } } = require('../../../../settings.json');
-const Binance = require('binance-api-node').default;
-
-export const binance_client = Binance({
-  apiKey: ApiKey,
-  apiSecret: SecretKey,
-}) 
+const { tokens: { ApiKey, ApiSecret } } = require('../../../../settings.json');
 
 export class Trade_menu implements State {
     public state_id = "trade_menu";
@@ -47,14 +38,14 @@ export class Trade_menu implements State {
         }
         catch (err) {
             const error = '🤬 menu err..'
-            console.log(err)
+            console.log(error)
             
         };
     };
 
     public async callbacks_handler(query: any, ctx: any): Promise<any> {
 
-        const exhange_client = new BinanceExch(ApiKey, SecretKey)
+        const exhange_client = new BinanceExch(ApiKey, ApiSecret)
 
         if (query.state_query === "back") {
 
@@ -62,37 +53,9 @@ export class Trade_menu implements State {
         }
         else if (query.state_query === "blnc") {
 
-            async function get_balance (): Promise<void>{
-
-                const balance = await binance_client.accountInfo()
-                // .then( (n: { balances: any[]; }) =>  { 
-
-                //   const positive_balance = n.balances.filter((asset: { free: any; locked: any; }) => Number(asset.free) > 0 || Number(asset.locked) > 0 ) 
-                //   return  positive_balance
-                // })
-
-                if (!balance || balance.toString().includes("Err")) return null
-
-                const positive_balance = balance.balances.filter((asset: { free: any; locked: any; }) => Number(asset.free) > 0 || Number(asset.locked) > 0 )
-
-                console.log('  POSITIVE BALANCE')
-                console.log(positive_balance)
-
-           
-            //    for (let n = 0; n < balance.length; n++){
-                  
-            //       current_balance.push(balance[n].asset + ": " + balance[n].free + " (+locked: " + balance[n].locked + ")\n");
-            //       console.log(current_balance);
-                  
-                   
-            //    }
-
-            //    await TG_bot.instance.send_notification('Your balance is:\n' + current_balance, ctx.chat.id);                   
-            }
-
             const balance = await exhange_client.all_balances()
 
-            console.log('  ECHANGE CLIENT BALANCE')
+            console.log("EXCHANGE CLIENT BALANCE")
             console.log(balance)
 
             if (!balance.length) return null
@@ -113,10 +76,13 @@ export class Trade_menu implements State {
         try {
             const selected_pair_name = query.toUpperCase();
             await Mongooose.getInstance().update_users_coin(ctx.chat.id, selected_pair_name)
-            // return await TG_bot.changeState(new Trade_menu(), ctx);
+        
             return await TG_bot.changeState(new Price_menu(), ctx);
         }
-        catch (err) { };
+        catch (err) { 
+            const error = '🤬 menu err..'
+            console.log(error)
+        };
     };
 
 };

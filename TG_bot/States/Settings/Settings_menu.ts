@@ -1,8 +1,6 @@
 
 
 import { State } from '../../State';
-const colors = require("colors");
-import { Markup } from 'telegraf';
 import { TG_bot } from '../../TG_bot';
 import { MainMenu } from '../MainMenu';
 import { Trade_menu } from '../Trade/Trade_menu';
@@ -48,9 +46,8 @@ export class Settings_menu implements State {
         }
         catch(err){
             const error = '🤬 menu err..'
-            console.log(err)
-            // await MCR_bot.changeState(new Err_menu(error), ctx)
-        };
+            console.log(error)
+            };
     };
 
     public async callbacks_handler(query: any, ctx: any): Promise<any>{
@@ -67,39 +64,18 @@ export class Settings_menu implements State {
         } 
 
 
-        // if (selected_buy_option == "buy"){
-
-        //     await Mongooose.getInstance().update_users_trade_options(ctx.chat.id, selected_buy_option)
-
-        //     return await TG_bot.changeState(new Trade_menu(), ctx);
-        // }
-        // else if (selected_buy_option === "sell"){
-
-        //     return await TG_bot.changeState(new Trade_menu(), ctx);
-        // }
-        // else if (selected_buy_option === "hold"){
-
-        //     return await TG_bot.changeState(new Trade_menu(), ctx);
-        // }
-        // else if (selected_buy_option === "back"){
-
-        //     return await TG_bot.changeState(new MainMenu(), ctx);
-        // }
-        // else {
-        //     console.log(colors.red("!!!!!  MainMenu ERRR : Can NOT define callback_query, user:" + ctx.chat.id));
-        //     return null;
-        // };
+        
     };
 
     public async messages_handler(query: any, ctx: any){
         try{
-            console.log("::::::::::: MAIN MENU, query", query);
+            console.log(":::::::::::Setting MENU, query", query);
             await ctx.deleteMessage();
         }
-        catch(err){};
+        catch(err){
+            const error = '🤬 menu err..'
+            console.log(error)
+        };
     };
 
-    public test_f(){
-
-    };
 };

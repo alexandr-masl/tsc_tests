@@ -2,7 +2,6 @@
 
 import { State } from '../State';
 const colors = require("colors");
-import { Markup } from 'telegraf';
 import { TG_bot } from '../TG_bot';
 import { Settings_menu } from './Settings/Settings_menu';
 import { Trade_menu } from './Trade/Trade_menu';
@@ -54,8 +53,7 @@ export class MainMenu implements State {
         }
         catch(err){
             const error = '🤬 menu err..'
-            console.log(err)
-            // await MCR_bot.changeState(new Err_menu(error), ctx)
+            console.log(error)
         };
     };
 
@@ -74,7 +72,7 @@ export class MainMenu implements State {
         
         else {
 
-            console.log(colors.red("!!!!!  MainMenu ERR : Can NOT define callback_query, user:" + ctx.chat.id));
+            console.log(colors.red("!!!!MainMenu ERR : Can NOT define callback_query, user:" + ctx.chat.id));
             return null;
         };
     };
@@ -84,10 +82,10 @@ export class MainMenu implements State {
             console.log("::::::::::: MAIN MENU, query", query);
             await ctx.deleteMessage();
         }
-        catch(err){};
+        catch(err){
+            const error = '🤬 menu err..'
+            console.log(error)
+        };
     };
 
-    public test_f(){
-
-    };
 };

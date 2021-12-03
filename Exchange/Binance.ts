@@ -1,6 +1,4 @@
 import {Exchange} from './Exchange';
-
-
 const Binance = require('binance-api-node').default
  
 export class BinanceExch implements Exchange {
@@ -36,7 +34,6 @@ export class BinanceExch implements Exchange {
                side: order.side,
                quantity: order.quantity,
                price: order.price,
-               newClientOrderId: order.clientOrderId,
                useServerTime: true,
             }).then(o => {return o}).catch(o => { return o});
 
@@ -217,9 +214,7 @@ export class BinanceExch implements Exchange {
             info           : info
          }
 
-         // console.log('binance:::exchange info:::')
-         // console.log(info)
-
+       
          info.symbols.map(symbolB => {
 
             if (symbolB.symbol === symbol){

@@ -1,13 +1,11 @@
 import { State } from '../../State';
 const colors = require("colors");
-import { Markup } from 'telegraf';
 import { TG_bot } from '../../TG_bot';
-import { MainMenu } from '../MainMenu';
 import { Trade_menu } from '../Trade/Trade_menu';
-import { userInfo } from 'os';
 import { Mongooose } from '../../../DataBase/Mongo';
 const Extra = require('telegraf/extra');
-import { binance_client } from './Trade_menu';
+import { BinanceExch } from '../../../Exchange/Binance';
+const { tokens: { ApiKey, ApiSecret } } = require('../../../../settings.json');
 
 
 export class Confirm_menu implements State {
@@ -48,9 +46,8 @@ export class Confirm_menu implements State {
         }
         catch (err) {
             const error = '🤬 menu err..'
-            console.log(err)
-            // await MCR_bot.changeState(new Err_menu(error), ctx)
-        };
+            console.log(error)
+            };
     };
 
     public async callbacks_handler(query: any, ctx: any): Promise<any> {
@@ -58,28 +55,26 @@ export class Confirm_menu implements State {
         if (query.state_query === "con") {
 
             const user_config = await Mongooose.getInstance().get_user_config(ctx.chat.id)
-
-
-            const place_order = await binance_client.order({
+            const exchange_client = new BinanceExch(ApiKey, ApiSecret)
+            
+            const place_order = await exchange_client.place_order({
                 symbol: `${user_config.coin.toUpperCase()}`,
                 side: `${user_config.trade_options.toUpperCase()}`,
                 quantity: `${user_config.quantity}`,
-                price: `${user_config.price}`
+                price: `${user_config.price}`,
+                type: 'LIMIT'
             })
-            .then(o => {return o }).catch(o => { return o })
-
-            // if (place_order.toString().includes("Error")){
-
-            console.log('---- PLACED ORDER RESULT')
-            console.log(place_order)
-
-            const error_txt = place_order.toString()
+           
+        
+            console.log(`PLACE ORDER RESULT: ${place_order}`)
 
             await TG_bot.getInstance().tg_bot_inst.telegram.sendMessage(
                 ctx.chat.id,
-                error_txt
+                `${place_order}`
             )
-            // }
+            // const account_stream = await exchange_client.account_stream
+            // console.log(account_stream)
+            
 
             return await TG_bot.changeState(new Trade_menu(), ctx);    
         }
@@ -88,7 +83,7 @@ export class Confirm_menu implements State {
             return await TG_bot.changeState(new Trade_menu(), ctx);
         }
         else {
-            console.log(colors.red("!!!!!  TradeMenu ERR : Can NOT define callback_query, user:" + ctx.chat.id));
+            console.log(colors.red("Menu ERR : Can NOT define callback_query, user:" + ctx.chat.id));
             return null;
         };
     };
@@ -100,7 +95,4 @@ export class Confirm_menu implements State {
         catch (err) { };
     };
 
-    public test_f() {
-
-    };
 };

@@ -51,8 +51,7 @@ export const userConfigSchema = new mongoose.Schema({
   },
   coin:{
     type: String,
-    default: "BTCUSDT",
-  }
+    }
 
 });
 
