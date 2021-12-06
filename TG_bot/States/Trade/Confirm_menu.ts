@@ -92,7 +92,10 @@ export class Confirm_menu implements State {
         try {
 
         }
-        catch (err) { };
+        catch (err) { 
+            const error = '🤬 menu err..'
+            console.log(error)
+        };
     };
 
 };
